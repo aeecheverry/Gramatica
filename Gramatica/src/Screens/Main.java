@@ -7,6 +7,7 @@ package Screens;
 
 import gramatica.Analisis;
 import gramatica.Conjunto;
+import gramatica.Gramatica;
 import gramatica.Produccion;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,41 +17,44 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
+import javax.swing.JTextField;
 
 /**
- * Clase Ventana
- * Muestra la estructuta que deberia tener una Ventana en Java con la libreria
- * Swing, contiene una etiqueta, un caja de texto y un boton, que tiene la
- * accion de mostrar el texto en la caja por una ventana de mensaje.
- * @author Daniel Alvarez (a3dany)
+ * @author Andrés Echeverry
  */
 public class Main extends JFrame implements ActionListener {
 
-    private JLabel tituloGO;           // titulo gramatica original
-    private JLabel tituloGE;           // titulo gramatica sin recursividad y factorizada
-    private JLabel tituloPrimeros;           //
-    private JLabel tituloSiguientes;           //
+    private JLabel tituloGO;           
+    private JLabel tituloGE;           
+    private JLabel tituloPrimeros;           
+    private JLabel tituloSiguientes;           
     private JPanel panelOEPS;
     private JPanel panelVC;
     private JPanel panelTM;
-    
-    private Analisis analisis;
+    private Gramatica gramatica;
+    private Analisis motorDeAnalisis;
 
-    public Main() {
+    public Main(Gramatica gramatica) {
         super();
-        configurarVentana();        
-        inicializarComponentes();   
+        configurarVentana();     
+        this.gramatica=gramatica;
+        inicializarComponentes();  
     }
-
+    
+    /*public static void main(String[] args) {
+        Main V = new Main();      // creamos una ventana
+        V.setVisible(true);             // hacemos visible la ventana creada
+    }*/
+    
     private void configurarVentana() {
-        this.setTitle("Esta Es Una Ventana");                   
+        this.setTitle("Gramática");                   
         this.setSize(1000, 600);                                 
         this.setLocationRelativeTo(null);                       
         this.setLayout(null);                                   
@@ -63,55 +67,44 @@ public class Main extends JFrame implements ActionListener {
         panelOEPS.setBounds(0, 0, (int)(getWidth()*0.7), (int)(getHeight()*0.5));
         panelOEPS.setLayout(new GridLayout(1,4));
         panelOEPS.setBackground(Color.white);
-        
-        panelVC = new JPanel();
-        panelVC.setBounds(panelOEPS.getWidth(), 0, (int)(getWidth()*0.3), getHeight());
-        panelVC.setBackground(Color.gray);
-        
-        
-        
-        panelTM = new JPanel();
-        panelTM.setBounds(0, panelOEPS.getHeight(), (int)(getWidth()*0.7), (int)(getHeight()*0.5));
-        panelTM.setBackground(Color.DARK_GRAY);
-        //panelTM.add(getPanelTM());
-        
         this.add(panelOEPS);
-        this.add(panelVC);
-        this.add(panelTM);  
         
-        //Motor de analisis gramatical
-        analisis= new Analisis();
-        analisis.gramaticaSample();
-        analisis.setNoTerminales();
-        analisis.setTerminales();
+        //Motor de motorDeAnalisis gramatical
+        motorDeAnalisis= new Analisis(gramatica.getProducciones());
+        motorDeAnalisis.gramaticaSample();
+        motorDeAnalisis.setNoTerminales();
+        motorDeAnalisis.setTerminales();
         
         //Gramatica original
-        panelOEPS.add(getPanelGramatica(0,(int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Original",getDataGramatica(analisis.getProducciones())));
+        panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Original",getDataGramatica(motorDeAnalisis.getProducciones())));
         
         //Gramatica mejorada
-        analisis.eliminarRecursividad();
-        analisis.factorizar();
-        analisis.setNoTerminales();
-        analisis.setTerminales();
-        panelOEPS.add(getPanelGramatica(1,(int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Mejorada",getDataGramatica(analisis.getProducciones())));
+        motorDeAnalisis.eliminarRecursividad();
+        motorDeAnalisis.factorizar();
+        motorDeAnalisis.setNoTerminales();
+        motorDeAnalisis.setTerminales();
+        panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Mejorada",getDataGramatica(motorDeAnalisis.getProducciones())));
         
         //Conjunto primeros
-        analisis.primeros();
-        panelOEPS.add(getPanelGramatica(2,(int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"PRIMEROS",getDataConjunto(analisis.getPrimeros())));
+        motorDeAnalisis.primeros();
+        panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"PRIMEROS",getDataConjunto(motorDeAnalisis.getPrimeros())));
         
         //Conjunto siguientes
-        analisis.siguientes();
-        panelOEPS.add(getPanelGramatica(3,(int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"SIGUIENTES",getDataConjunto(analisis.getSiguientes())));
+        motorDeAnalisis.siguientes();
+        panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"SIGUIENTES",getDataConjunto(motorDeAnalisis.getSiguientes())));
         
         //Genera tabla M
-        analisis.setTablaM();
-        panelTM.add(getPanelTablaM(panelTM.getWidth(),panelTM.getHeight()));
+        motorDeAnalisis.setTablaM();
+        this.add(getPanelTablaM(0, panelOEPS.getX()+panelOEPS.getHeight(), (int)(getWidth()*0.7), (int)(getHeight()*0.5)));
+        
+        this.add(getPanelDeValidacion(panelOEPS.getWidth(), 0, (int)(getWidth()*0.3), getHeight()));
     }
     
-    private JPanel getPanelGramatica(int i,int width,int height,String titulo,String[] data){
+    private JPanel getPanelGramatica(int width,int height,String titulo,String[] data){
         JPanel panel=new JPanel();
         panel.setLayout(null);
         panel.setPreferredSize(new Dimension(width,height));
+        panel.setBackground(Color.white);
         
         JLabel tituloG=new JLabel(titulo);
         tituloG.setBounds(panel.getX()+(int)(width*0.05), panel.getY(), (int)(width*0.9),(int)(height*0.15));
@@ -151,45 +144,91 @@ public class Main extends JFrame implements ActionListener {
         return gramatica.split("¡");
     }
     
-    public JPanel getPanelTablaM(int width, int height){
+    public JPanel getPanelTablaM(int x,int y,int width, int height){
         JPanel panel=new JPanel();
         panel.setLayout(null);
-        panel.setPreferredSize(new Dimension(width,height));
+        panel.setBackground(Color.white);
+        panel.setBounds(x, y, width, height);
         
         JLabel tituloTM=new JLabel("Tabla M");
-        tituloTM.setBounds(panel.getX()+(int)(width*0.05), panel.getY(), (int)(width*0.9),(int)(height*0.15));
         tituloTM.setFont(new Font("Verdana", Font.BOLD, 16));
+        tituloTM.setBounds((int)(width*0.01), 0, width,(int)(height*0.15));
         
-        int n=analisis.getTablaM().length-1;
-        int m=analisis.getTablaM()[0].length;
+        int n=motorDeAnalisis.getTablaM().length-1;
+        int m=motorDeAnalisis.getTablaM()[0].length;
         String[][] data = new String[n][];
         for (int i = 0; i < n; i++) {
-            data[i] = Arrays.copyOfRange(analisis.getTablaM()[i+1], 0, m);
+            data[i] = Arrays.copyOfRange(motorDeAnalisis.getTablaM()[i+1], 0, m);
         }
         
-        String[] columnNames=Arrays.copyOfRange(analisis.getTablaM()[0], 0, m);
+        String[] columnNames=Arrays.copyOfRange(motorDeAnalisis.getTablaM()[0], 0, m);
         
         JTable table = new JTable(data, columnNames);
-        table.setBounds(panel.getX()+(int)(width*0.05), tituloTM.getHeight(), (int)(width*0.9),(int)(height*0.7));
+        table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
         table.setFont(new Font("Verdana", Font.PLAIN, 15));
+        table.setRowHeight(25);
                 
         JScrollPane menuScrollPane=new JScrollPane(table);
-        menuScrollPane.setBounds(panel.getX()+(int)(width*0.05),tituloTM.getHeight(),(int)(width*0.9),(int)(height*0.7));
+        menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight(),(int)(width*0.975),(int)(height*0.7));
+        menuScrollPane.setMaximumSize(new Dimension((int)(width*0.975),(int)(height*0.7)));
         
         panel.add(tituloTM);
         panel.add(menuScrollPane);
         
-        
-        
         return panel;
     }
     
-    
-    public static void main(String[] args) {
-        Main V = new Main();      // creamos una ventana
-        V.setVisible(true);             // hacemos visible la ventana creada
+    public JPanel getPanelDeValidacion(int x,int y,int width, int height){
+        JPanel panel=new JPanel();
+        panel.setLayout(null);
+        panel.setBackground(Color.white);
+        panel.setBounds(x, y, width, height);
+        
+        JLabel tituloTM=new JLabel("Validacion de cadena");
+        tituloTM.setFont(new Font("Verdana", Font.BOLD, 16));
+        tituloTM.setBounds((int)(width*0.01), 0, width,(int)(height*0.075));
+        
+        JTextField campoValidacion=new JTextField();
+        campoValidacion.setFont(new Font("Verdana", Font.BOLD, 14));
+        campoValidacion.setBounds((int)(width*0.01), tituloTM.getHeight(), (int)(width*0.6),(int)(height*0.05));
+        
+        JButton botonValidar=new JButton("Validar");
+        botonValidar.setFont(new Font("Verdana", Font.BOLD, 14));
+        botonValidar.setBounds(campoValidacion.getWidth()+(int)(width*0.025), tituloTM.getHeight(), (int)(width*0.3),(int)(height*0.05));
+        botonValidar.setForeground(Color.white);
+        botonValidar.setBackground(Color.darkGray);
+        botonValidar.addActionListener((ActionEvent e) -> {
+            validarCadena(campoValidacion.getText());
+        });
+        
+        int n=motorDeAnalisis.getTablaM().length-1;
+        String[][] data = new String[n][];
+        for (int i = 0; i < n; i++) {
+            data[i] = Arrays.copyOfRange(motorDeAnalisis.getTablaM()[i+1], 0, 3);
+        }
+        
+        String[] columnNames={"Pila","Entada","Salida"};
+        
+        JTable table = new JTable(data, columnNames);
+        table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
+        table.setFont(new Font("Verdana", Font.PLAIN, 15));
+        table.setRowHeight(25);
+                
+        JScrollPane menuScrollPane=new JScrollPane(table);
+        menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight()+campoValidacion.getHeight()+(int)(height*0.01),(int)(width*0.92),(int)(height*0.79));
+        menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
+        
+        panel.add(tituloTM);
+        panel.add(campoValidacion);
+        panel.add(botonValidar);
+        panel.add(menuScrollPane);
+        
+        return panel;
     }
 
+    public void validarCadena(String cadena){
+    
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

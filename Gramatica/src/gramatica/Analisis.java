@@ -13,6 +13,8 @@ import java.util.ArrayList;
  */
 public class Analisis {
     ArrayList<Produccion> producciones;
+
+    
     ArrayList<String> terminales;
     ArrayList<String> noTerminales;
     ArrayList<String> unusedNoTerminales;
@@ -20,14 +22,15 @@ public class Analisis {
     ArrayList<Conjunto> primeros;
     ArrayList<Conjunto> siguientes;
     String[][] tablaM;
+
     final String epsilon="&";
     final String fs="$";
     
-    public Analisis(){
-    
+    public Analisis(ArrayList<Produccion> producciones){
+        this.producciones=producciones;
     }
     
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Analisis analisis=new Analisis();
         
         analisis.gramaticaSample();
@@ -41,10 +44,8 @@ public class Analisis {
         analisis.setNoTerminales();
         analisis.setTerminales();
         analisis.printGramatica();
-        analisis.primeros();
-        analisis.siguientes();
         analisis.setTablaM();
-    }
+    }*/
     
     
     
@@ -58,7 +59,7 @@ public class Analisis {
                 String produce=produccion.getProduccion(producei);
                 indices.clear();
                 minIndex=-1;
-                for(int producej=0;producej<produccion.getProducciones().size();producej++){
+                for(int producej=producei+1;producej<produccion.getProducciones().size();producej++){
                     String produceI=produccion.getProduccion(producej);
                     int min=Math.min(produce.length(), produceI.length());
                     int i=1;
@@ -103,7 +104,7 @@ public class Analisis {
             producciones.get(inp).setProduccion(temp);
         }
     }
-
+    
     
     
     //Elimina recursividad
@@ -154,7 +155,7 @@ public class Analisis {
     //Establece conjunto de primeros
     public void primeros(){
         primeros=new ArrayList();
-        System.out.println("PRIMEROS");
+        //System.out.println("PRIMEROS");
         producciones.forEach((produccion)->{
             primeros.add(new Conjunto(produccion));
             for(int i=0;i<produccion.getProducciones().size();i++){
@@ -164,7 +165,7 @@ public class Analisis {
         });
         
         //Muestra en consola el conjunto PRIMEROS
-        primeros.forEach((primero)->{
+        /*primeros.forEach((primero)->{
             System.out.printf("%-2s = [ ",primero.getSimboloProduccion());
             for(int i=0;i<primero.getSimbolos().size();i++){
                 String terminal=primero.getSimbolo(i);
@@ -173,7 +174,7 @@ public class Analisis {
             }
             System.out.print(" ]");
             System.out.println();
-        });
+        });*/
     }
     
     //Retorna el valor de alfa_i
@@ -213,7 +214,7 @@ public class Analisis {
     
     //Establece el conjunto de siguientes
     public void siguientes(){
-        System.out.println("SIGUIENTES");
+        //System.out.println("SIGUIENTES");
         siguientes=new ArrayList();
         producciones.forEach((produccion)->{
             siguientes.add(new Conjunto(produccion));
@@ -246,11 +247,11 @@ public class Analisis {
         });
         
         //Escribe en consola el conjunto SIGUIENTES
-        siguientes.forEach((siguiente)->{
+        /*siguientes.forEach((siguiente)->{
             System.out.print(siguiente.getSimboloProduccion()+" = ");
             System.out.print(siguiente.getSimbolos().toString());
             System.out.println();
-        });
+        });*/
         
     }
     
@@ -366,8 +367,11 @@ public class Analisis {
         unusedNoTerminales.add("W'");
     }
     
+    
+    
+    //Obtener tabla M
     public void setTablaM(){
-        System.out.println("Tabla M");
+        //System.out.println("Tabla M");
         tablaM=new String[noTerminales.size()+1][terminales.size()+1];
         tablaM[0][0]="NT/T";
         for (int i = 0; i < noTerminales.size()+1; i++) {
@@ -392,13 +396,16 @@ public class Analisis {
                         }
                     }
                 }
-                System.out.printf("%-13s", tablaM[i][j]);
+                //System.out.printf("%-13s", tablaM[i][j]);
             }
-            System.out.println();
+            //System.out.println();
         }
     }
     
     
+    public void validarCadena(){
+        
+    }
     
     //Gramatica de prueba
     public void gramaticaSample(){
@@ -411,7 +418,7 @@ public class Analisis {
         producciones.get(1).setProduccion("T*F");
         producciones.get(1).setProduccion("T/F");
         producciones.get(1).setProduccion("F");
-        producciones.get(1).setProduccion("&");
+        //producciones.get(1).setProduccion("&");
         producciones.add(new Produccion("F"));
         producciones.get(2).setProduccion("i");
         producciones.get(2).setProduccion("(E)");
@@ -425,7 +432,7 @@ public class Analisis {
     
        
     //Imprime gramatica en consola
-    public void printGramatica(){
+    /*public void printGramatica(){
         producciones.forEach((Produccion p)->{
             p.getProducciones().forEach((produce)->{
                 System.out.println(p.getSymbol()+"->"+produce);
@@ -433,6 +440,22 @@ public class Analisis {
         });
         System.out.println("Terminales: "+terminales.toString());
         System.out.println("No terminales: "+noTerminales.toString());
+    }*/
+    
+    
+    public ArrayList<Produccion> getProducciones() {
+        return producciones;
     }
     
+    public ArrayList<Conjunto> getPrimeros() {
+        return primeros;
+    }
+
+    public ArrayList<Conjunto> getSiguientes() {
+        return siguientes;
+    }
+    
+    public String[][] getTablaM() {
+        return tablaM;
+    }
 }
