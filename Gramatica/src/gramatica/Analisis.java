@@ -23,6 +23,9 @@ public class Analisis {
     ArrayList<Conjunto> primeros;
     ArrayList<Conjunto> siguientes;
     String[][] tablaM;
+    ArrayList<String> pila;
+    ArrayList<String> entrada;
+    ArrayList<String> salida;
 
     final String epsilon="&";
     final String fs="$";
@@ -410,24 +413,78 @@ public class Analisis {
     
     
     public void validarCadena(String cadena){
-        String desp="desplazar";
-        String red="reducir";
-        String[][] tablaV=new String[100][3];
+        pila=new ArrayList();
+        entrada=new ArrayList();
+        salida=new ArrayList();
+        
+        pila.add(fs+producciones.get(0).getSymbol());
+        entrada.add(cadena+fs);
         int i=0;
-        /*while(){
-            for (int j = 0; j < 3; j++) {
-                if (i==0) {
-                    tablaV[i][0]=fs;
-                    tablaV[i][1]=cadena;
-                    tablaV[i][2]=desp;
+        String X=(pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length()).equals("'")) ? pila.get(i).substring(pila.get(i).length()-2, pila.get(i).length()): pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());
+        while(!X.equals(fs)){
+            String a=entrada.get(i).substring(0, 1);
+            X=(pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length()).equals("'")) ? pila.get(i).substring(pila.get(i).length()-2, pila.get(i).length()): pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());;
+            if(isTerminal(X)){
+                if (X.equals(a)) {
+                    if (X.equals(fs)&& a.equals(fs)) {
+                        salida.add("Aceptar");
+                    }else{
+                        pila.add(pila.get(i).substring(0, pila.get(i).length()-1));
+                        entrada.add(entrada.get(i).substring(1, entrada.get(i).length()));
+                        salida.add("desp");
+                    }
+                    i++;
                 }else{
-                    tablaV[i-1][0]=tablaV[i-1][0]+tablaV[i-1][1].substring(0, 1);
-                        
-                    
+                    salida.add("Err");
+                    break;
+                }
+            }else{
+                if (noTerminales.contains(X) && (a.equals(fs) || terminales.contains(a))) {
+                    int n=X.length();
+                    int f=0;
+                    if (terminales.contains(a)) {
+                        f=terminales.indexOf(a)+1;
+                    }else{
+                        f=tablaM[0].length-1;
+                    }
+                    String produce=tablaM[noTerminales.indexOf(X)+1][f];
+                    if (!produce.isEmpty() && produce.matches("^[A-Z]'?->(\\w|\\W)*$")) {
+                        X=produce.split("->")[1];
+                        String simbol=invertirProduce(X);
+                        if (simbol.equals(epsilon)) {
+                            pila.add(pila.get(i).substring(0, pila.get(i).length()-n));
+                        }else{
+                            pila.add(pila.get(i).substring(0, pila.get(i).length()-n)+invertirProduce(X));
+                        }
+                        entrada.add(entrada.get(i));
+                        salida.add("red "+produce);
+                        i++;
+                    }else{
+                        salida.add("Err");
+                        break;
+                    }
+                }else{
+                    salida.add("Err");
+                    break;
                 }
             }
-        }*/
-         
+        }
+        for(int j=0;j<salida.size();j++){
+            System.out.println(pila.get(j)+" "+entrada.get(j)+" "+salida.get(j));
+        }
+    }
+    
+    private String invertirProduce(String cadena) {
+        String invertida = "";
+        for(int i=cadena.length();i>=1;i--){
+            String simbolo=cadena.substring(i-1, i);
+            if (simbolo.equals("'")) {
+                simbolo=cadena.substring(i-2, i);
+                i--;
+            }
+            invertida = invertida + simbolo;
+        }
+        return invertida;
     }
     
     //Gramatica de prueba
@@ -484,5 +541,17 @@ public class Analisis {
     
     public ArrayList<String> getNoTerminales() {
         return noTerminales;
+    }
+    
+    public ArrayList<String> getPila() {
+        return pila;
+    }
+
+    public ArrayList<String> getEntrada() {
+        return entrada;
+    }
+
+    public ArrayList<String> getSalida() {
+        return salida;
     }
 }

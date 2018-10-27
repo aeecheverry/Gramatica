@@ -25,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * @author Andrés Echeverry
@@ -74,6 +76,7 @@ public class Main extends JFrame implements ActionListener {
         //motorDeAnalisis.gramaticaSample();
         motorDeAnalisis.setNoTerminales();
         motorDeAnalisis.setTerminales();
+        
         if (motorDeAnalisis.getProducciones().size()!=motorDeAnalisis.getNoTerminales().size()) {
             
         }
@@ -201,37 +204,39 @@ public class Main extends JFrame implements ActionListener {
         botonValidar.setBackground(Color.darkGray);
         botonValidar.setFocusPainted(false);
         
-        /*botonValidar.addActionListener((ActionEvent e) -> {
-            validarCadena(campoValidacion.getText());
-        });*/
-        
-        int n=motorDeAnalisis.getTablaM().length-1;
-        String[][] data = new String[n][];
-        for (int i = 0; i < n; i++) {
-            data[i] = Arrays.copyOfRange(motorDeAnalisis.getTablaM()[i+1], 0, 3);
-        }
         
         String[] columnNames={"Pila","Entada","Salida"};
-        
-        JTable table = new JTable(data, columnNames);
-        table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
-        table.setFont(new Font("Verdana", Font.PLAIN, 15));
-        table.setRowHeight(25);
+        //JTable table = new JTable({"hola","hi","syu"}, columnNames);
+        //table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
+        //table.setFont(new Font("Verdana", Font.PLAIN, 15));
+        //table.setRowHeight(25);
                 
-        JScrollPane menuScrollPane=new JScrollPane(table);
-        menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight()+campoValidacion.getHeight()+(int)(height*0.01),(int)(width*0.92),(int)(height*0.79));
-        menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
+        //JScrollPane menuScrollPane=new JScrollPane(table);
+        //menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight()+campoValidacion.getHeight()+(int)(height*0.01),(int)(width*0.92),(int)(height*0.79));
+        //menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
+        
+        botonValidar.addActionListener((ActionEvent e) -> {
+            validarCadena(campoValidacion.getText());
+        });
         
         panel.add(tituloTM);
         panel.add(campoValidacion);
         panel.add(botonValidar);
-        panel.add(menuScrollPane);
+        //panel.add(menuScrollPane);
         
         return panel;
     }
 
-    public void validarCadena(String cadena){
-        
+    public String[][] validarCadena(String cadena){
+        motorDeAnalisis.validarCadena(cadena);
+        int n=motorDeAnalisis.getPila().size();
+        String[][] data = new String[n][3];
+        for (int i = 0; i < n-1; i++) {
+            data[i][0] = motorDeAnalisis.getPila().get(i);
+            data[i][1] = motorDeAnalisis.getEntrada().get(i);
+            data[i][2] = motorDeAnalisis.getSalida().get(i);
+        }
+        return data;
     }
     
     @Override
