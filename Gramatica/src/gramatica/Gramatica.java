@@ -7,17 +7,19 @@ package gramatica;
 
 import java.util.ArrayList;
 
-/**
+/*
  *
  * @author andre
  */
 public class Gramatica {
+    
     ArrayList<Produccion> producciones;
 
     
     public Gramatica(){
         producciones=new ArrayList();
     }
+    
     
     public void cargarProduccion(String produccion){
         
@@ -47,6 +49,7 @@ public class Gramatica {
         }*/
     }
     
+    
     public boolean containProduccion(String simbolo){
         for(int i=0;i<producciones.size();i++){
             Produccion produccion=producciones.get(i);
@@ -56,6 +59,7 @@ public class Gramatica {
         }
         return false;
     }
+    
     
     public Produccion getProduccion(String simbolo){
         for(int i=0;i<producciones.size();i++){

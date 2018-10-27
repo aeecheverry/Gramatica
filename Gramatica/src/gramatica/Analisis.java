@@ -7,22 +7,25 @@ package gramatica;
 
 import java.util.ArrayList;
 
-/**
+/*
  *
  * @author andre
  */
-public class Analisis {
-    ArrayList<Produccion> producciones;
 
+public class Analisis {
+    
+    ArrayList<Produccion> producciones;
     
     ArrayList<String> terminales;
     ArrayList<String> noTerminales;
-
     ArrayList<String> unusedNoTerminales;
     ArrayList<String> simbolosGramaticales;
+    
     ArrayList<Conjunto> primeros;
     ArrayList<Conjunto> siguientes;
+    
     String[][] tablaM;
+    
     ArrayList<String> pila;
     ArrayList<String> entrada;
     ArrayList<String> salida;
@@ -33,24 +36,6 @@ public class Analisis {
     public Analisis(ArrayList<Produccion> producciones){
         this.producciones=producciones;
     }
-    
-    /*public static void main(String[] args) {
-        Analisis analisis=new Analisis();
-        
-        analisis.gramaticaSample();
-        
-        analisis.setNoTerminales();
-        analisis.setTerminales();
-        analisis.printGramatica();
-        
-        analisis.eliminarRecursividad();
-        analisis.factorizar();
-        analisis.setNoTerminales();
-        analisis.setTerminales();
-        analisis.printGramatica();
-        analisis.setTablaM();
-    }*/
-    
     
     
     //Factoriza la gramatica
@@ -172,18 +157,6 @@ public class Analisis {
             } 
             
         });
-        
-        //Muestra en consola el conjunto PRIMEROS
-        /*primeros.forEach((primero)->{
-            System.out.printf("%-2s = [ ",primero.getSimboloProduccion());
-            for(int i=0;i<primero.getSimbolos().size();i++){
-                String terminal=primero.getSimbolo(i);
-                String produce=primero.getPruce(terminal);
-                System.out.printf(" %-1s : %-1s,",terminal,produce);
-            }
-            System.out.print(" ]");
-            System.out.println();
-        });*/
     }
     
     //Retorna el valor de alfa_i
@@ -203,7 +176,7 @@ public class Analisis {
         } 
     }
     
-//Busca recursivamente el terminal que corresponde al primer termino de la i-esimo produce, devuelve true si deriva a epsilon
+    //Busca recursivamente el terminal que corresponde al primer termino de la i-esimo produce, devuelve true si deriva a epsilon
     public boolean setPrimeros(int indexProduccion,int indexProduce, String alfa){
         if (isTerminal(alfa)) {
             if(!primeros.get(indexProduccion).getSimbolos().contains(alfa)){
@@ -254,13 +227,6 @@ public class Analisis {
                 siguientes.get(0).setSimbolo(fs, 0);
             }
         });
-        
-        //Escribe en consola el conjunto SIGUIENTES
-        /*siguientes.forEach((siguiente)->{
-            System.out.print(siguiente.getSimboloProduccion()+" = ");
-            System.out.print(siguiente.getSimbolos().toString());
-            System.out.println();
-        });*/
         
     }
     
@@ -405,9 +371,7 @@ public class Analisis {
                         }
                     }
                 }
-                //System.out.printf("%-13s", tablaM[i][j]);
             }
-            //System.out.println();
         }
     }
     
@@ -435,7 +399,7 @@ public class Analisis {
                     }
                     i++;
                 }else{
-                    salida.add("Err");
+                    salida.add("Invalida");
                     break;
                 }
             }else{
@@ -460,19 +424,20 @@ public class Analisis {
                         salida.add("red "+produce);
                         i++;
                     }else{
-                        salida.add("Err");
+                        salida.add("Invalida");
                         break;
                     }
                 }else{
-                    salida.add("Err");
+                    salida.add("Invalida");
                     break;
                 }
             }
         }
-        for(int j=0;j<salida.size();j++){
+        /*for(int j=0;j<salida.size();j++){
             System.out.println(pila.get(j)+" "+entrada.get(j)+" "+salida.get(j));
-        }
+        }*/
     }
+    
     
     private String invertirProduce(String cadena) {
         String invertida = "";
@@ -487,40 +452,6 @@ public class Analisis {
         return invertida;
     }
     
-    //Gramatica de prueba
-    public void gramaticaSample(){
-        /*producciones=new ArrayList<>();
-        producciones.add(new Produccion("E"));
-        producciones.get(0).setProduccion("E+T");
-        producciones.get(0).setProduccion("E-T");
-        producciones.get(0).setProduccion("T");
-        producciones.add(new Produccion("T"));
-        producciones.get(1).setProduccion("T*F");
-        producciones.get(1).setProduccion("T/F");
-        producciones.get(1).setProduccion("F");
-        //producciones.get(1).setProduccion("&");
-        producciones.add(new Produccion("F"));
-        producciones.get(2).setProduccion("i");
-        producciones.get(2).setProduccion("(E)");*/
-        
-       /* producciones.add(new Produccion("E"));
-        producciones.get(0).setProduccion("E+T");
-        producciones.get(0).setProduccion("E+F");
-        producciones.get(0).setProduccion("Ta");
-        producciones.get(0).setProduccion("Tb");*/
-    }
-    
-       
-    //Imprime gramatica en consola
-    /*public void printGramatica(){
-        producciones.forEach((Produccion p)->{
-            p.getProducciones().forEach((produce)->{
-                System.out.println(p.getSymbol()+"->"+produce);
-            });
-        });
-        System.out.println("Terminales: "+terminales.toString());
-        System.out.println("No terminales: "+noTerminales.toString());
-    }*/
     
     
     public ArrayList<Produccion> getProducciones() {
@@ -555,3 +486,4 @@ public class Analisis {
         return salida;
     }
 }
+

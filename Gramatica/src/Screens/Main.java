@@ -8,7 +8,9 @@ package Screens;
 import gramatica.Analisis;
 import gramatica.Conjunto;
 import gramatica.Gramatica;
+import gramatica.Modelo;
 import gramatica.Produccion;
+import gramatica.Render;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -25,8 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  * @author Andrés Echeverry
@@ -50,10 +50,6 @@ public class Main extends JFrame implements ActionListener {
         inicializarComponentes();  
     }
     
-    /*public static void main(String[] args) {
-        Main V = new Main();      // creamos una ventana
-        V.setVisible(true);             // hacemos visible la ventana creada
-    }*/
     
     private void configurarVentana() {
         this.setTitle("Gramática");                   
@@ -64,6 +60,7 @@ public class Main extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    
     private void inicializarComponentes() {
         panelOEPS = new JPanel();
         panelOEPS.setBounds(0, 0, (int)(getWidth()*0.7), (int)(getHeight()*0.5));
@@ -73,13 +70,9 @@ public class Main extends JFrame implements ActionListener {
         
         //Motor de motorDeAnalisis gramatical
         motorDeAnalisis= new Analisis(gramatica.getProducciones());
-        //motorDeAnalisis.gramaticaSample();
         motorDeAnalisis.setNoTerminales();
         motorDeAnalisis.setTerminales();
         
-        if (motorDeAnalisis.getProducciones().size()!=motorDeAnalisis.getNoTerminales().size()) {
-            
-        }
         //Gramatica original
         panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Original",getDataGramatica(motorDeAnalisis.getProducciones())));
         
@@ -204,25 +197,26 @@ public class Main extends JFrame implements ActionListener {
         botonValidar.setBackground(Color.darkGray);
         botonValidar.setFocusPainted(false);
         
-        
-        String[] columnNames={"Pila","Entada","Salida"};
-        //JTable table = new JTable({"hola","hi","syu"}, columnNames);
-        //table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
-        //table.setFont(new Font("Verdana", Font.PLAIN, 15));
-        //table.setRowHeight(25);
+        JTable table = new JTable();
+        table.setBounds(0, 0, (int)(width*0.975),table.getHeight());
+        table.setFont(new Font("Verdana", Font.PLAIN, 15));
+        table.setRowHeight(25);
                 
-        //JScrollPane menuScrollPane=new JScrollPane(table);
-        //menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight()+campoValidacion.getHeight()+(int)(height*0.01),(int)(width*0.92),(int)(height*0.79));
-        //menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
+        JScrollPane menuScrollPane=new JScrollPane(table);
+        menuScrollPane.setBounds((int)(width*0.01),tituloTM.getHeight()+campoValidacion.getHeight()+(int)(height*0.01),(int)(width*0.92),(int)(height*0.79));
+        menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
         
         botonValidar.addActionListener((ActionEvent e) -> {
-            validarCadena(campoValidacion.getText());
+            Modelo model=new Modelo();
+            model.setData(validarCadena(campoValidacion.getText()));
+            table.setModel(model);
+            table.setDefaultRenderer(Object.class, new Render());
         });
         
         panel.add(tituloTM);
         panel.add(campoValidacion);
         panel.add(botonValidar);
-        //panel.add(menuScrollPane);
+        panel.add(menuScrollPane);
         
         return panel;
     }
@@ -231,7 +225,7 @@ public class Main extends JFrame implements ActionListener {
         motorDeAnalisis.validarCadena(cadena);
         int n=motorDeAnalisis.getPila().size();
         String[][] data = new String[n][3];
-        for (int i = 0; i < n-1; i++) {
+        for (int i = 0; i < n; i++) {
             data[i][0] = motorDeAnalisis.getPila().get(i);
             data[i][1] = motorDeAnalisis.getEntrada().get(i);
             data[i][2] = motorDeAnalisis.getSalida().get(i);
