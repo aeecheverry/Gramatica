@@ -59,7 +59,7 @@ public class Main extends JFrame implements ActionListener {
         this.setLocationRelativeTo(null);                       
         this.setLayout(null);                                   
         this.setResizable(false);                               
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void inicializarComponentes() {
@@ -71,10 +71,12 @@ public class Main extends JFrame implements ActionListener {
         
         //Motor de motorDeAnalisis gramatical
         motorDeAnalisis= new Analisis(gramatica.getProducciones());
-        motorDeAnalisis.gramaticaSample();
+        //motorDeAnalisis.gramaticaSample();
         motorDeAnalisis.setNoTerminales();
         motorDeAnalisis.setTerminales();
-        
+        if (motorDeAnalisis.getProducciones().size()!=motorDeAnalisis.getNoTerminales().size()) {
+            
+        }
         //Gramatica original
         panelOEPS.add(getPanelGramatica((int)(panelOEPS.getWidth()/4),panelOEPS.getHeight(),"Original",getDataGramatica(motorDeAnalisis.getProducciones())));
         
@@ -136,12 +138,12 @@ public class Main extends JFrame implements ActionListener {
     }
 
     public String[] getDataConjunto(ArrayList<Conjunto> conjuntos){
-        String gramatica="";
+        String gramaticas="";
         for(int i=0;i<conjuntos.size();i++){
             Conjunto conjunto=conjuntos.get(i);
-            gramatica=gramatica+conjunto.getSimboloProduccion()+"="+conjunto.getSimbolos().toString()+"¡";
+            gramaticas=gramaticas+conjunto.getSimboloProduccion()+"="+conjunto.getSimbolos().toString()+"¡";
         }
-        return gramatica.split("¡");
+        return gramaticas.split("¡");
     }
     
     public JPanel getPanelTablaM(int x,int y,int width, int height){
@@ -197,9 +199,11 @@ public class Main extends JFrame implements ActionListener {
         botonValidar.setBounds(campoValidacion.getWidth()+(int)(width*0.025), tituloTM.getHeight(), (int)(width*0.3),(int)(height*0.05));
         botonValidar.setForeground(Color.white);
         botonValidar.setBackground(Color.darkGray);
-        botonValidar.addActionListener((ActionEvent e) -> {
+        botonValidar.setFocusPainted(false);
+        
+        /*botonValidar.addActionListener((ActionEvent e) -> {
             validarCadena(campoValidacion.getText());
-        });
+        });*/
         
         int n=motorDeAnalisis.getTablaM().length-1;
         String[][] data = new String[n][];
@@ -227,8 +231,9 @@ public class Main extends JFrame implements ActionListener {
     }
 
     public void validarCadena(String cadena){
-    
+        
     }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

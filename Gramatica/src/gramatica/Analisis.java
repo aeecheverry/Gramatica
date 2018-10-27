@@ -17,6 +17,7 @@ public class Analisis {
     
     ArrayList<String> terminales;
     ArrayList<String> noTerminales;
+
     ArrayList<String> unusedNoTerminales;
     ArrayList<String> simbolosGramaticales;
     ArrayList<Conjunto> primeros;
@@ -54,29 +55,31 @@ public class Analisis {
         for(int pi=0;pi<producciones.size();pi++){
             Produccion produccion=producciones.get(pi);
             ArrayList<Integer> indices=new ArrayList();
-            int minIndex;
-            for(int producei=0;producei<produccion.getProducciones().size();producei++){
+            
+            for(int producei=0;producei<produccion.getProducciones().size()-1;producei++){
                 String produce=produccion.getProduccion(producei);
                 indices.clear();
-                minIndex=-1;
+                int minIndex=Integer.MAX_VALUE;
+                
                 for(int producej=producei+1;producej<produccion.getProducciones().size();producej++){
                     String produceI=produccion.getProduccion(producej);
                     int min=Math.min(produce.length(), produceI.length());
+                    boolean factorizable=false;
                     int i=1;
-                    if(!produce.equals(produceI)){
-                        while(produce.substring(0, i).equals(produceI.substring(0, i)) && i<min){
-                            if (!indices.contains(produccion.getProducciones().indexOf(produce))) {
-                                indices.add(produccion.getProducciones().indexOf(produce));
-                            }
-                            if (!indices.contains(produccion.getProducciones().indexOf(produceI))) {
-                                indices.add(produccion.getProducciones().indexOf(produceI));
-                            }
-                            minIndex=i;
-                            i++;
+                    while(i<=min && produce.substring(0, i).equals(produceI.substring(0, i))){
+                        minIndex=i;
+                        factorizable=true;
+                        i++;
+                    }
+                    if (factorizable) {
+                        if (!indices.contains(produccion.getIndex(produce))) {
+                            indices.add(produccion.getIndex(produce));
                         }
+                        indices.add(produccion.getIndex(produceI));
+                        
                     }
                 }
-                if (minIndex>=1) {
+                if (minIndex>0 && minIndex<Integer.MAX_VALUE) {
                     setFactorizacion(produccion,indices,minIndex);
                 }
             }
@@ -87,19 +90,22 @@ public class Analisis {
     public void setFactorizacion(Produccion produccion,ArrayList<Integer> indices,int minIndex){
         String newProduccion=produccion.getSymbol()+"'";
         if (!unusedNoTerminales.contains(newProduccion)) {
-            newProduccion=unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6)+5));
+            newProduccion=unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6)));
         }
         int inp=producciones.indexOf(produccion)+1;
         producciones.add(inp, new Produccion(newProduccion));
         unusedNoTerminales.remove(newProduccion);
         boolean fatorized=false;
-        for(int i: indices){
-            String temp=produccion.getProduccion(i).substring(minIndex, produccion.getProduccion(i).length());
+        int r=0;
+        for(int i=0;i<indices.size();i++){
+            int index=indices.get(i)-r;
+            String temp=(minIndex<produccion.getProduccion(index).length())? produccion.getProduccion(index).substring(minIndex, produccion.getProduccion(index).length()):epsilon;
             if(!fatorized){
-                produccion.editProduccion(i,produccion.getProduccion(i).substring(0, minIndex)+newProduccion);
+                produccion.editProduccion(index,produccion.getProduccion(index).substring(0, minIndex)+newProduccion);
                 fatorized=true;
-            }else{
-                produccion.getProducciones().remove(i);
+            }else{  
+                produccion.getProducciones().remove(index);
+                r++;
             }
             producciones.get(inp).setProduccion(temp);
         }
@@ -115,7 +121,7 @@ public class Analisis {
             String newProduccion=produccion.getSymbol()+"'";
             int ipr=producciones.indexOf(produccion)+1;
             if (recursiva) {
-                newProduccion=!unusedNoTerminales.contains(newProduccion)? unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6)+5)): newProduccion;
+                newProduccion=!unusedNoTerminales.contains(newProduccion)? unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6))): newProduccion;
                 producciones.add(ipr, new Produccion(newProduccion));   
                 unusedNoTerminales.remove(newProduccion);
                 for(int producei=0;producei<produccion.getProducciones().size();producei++){
@@ -403,13 +409,30 @@ public class Analisis {
     }
     
     
-    public void validarCadena(){
-        
+    public void validarCadena(String cadena){
+        String desp="desplazar";
+        String red="reducir";
+        String[][] tablaV=new String[100][3];
+        int i=0;
+        /*while(){
+            for (int j = 0; j < 3; j++) {
+                if (i==0) {
+                    tablaV[i][0]=fs;
+                    tablaV[i][1]=cadena;
+                    tablaV[i][2]=desp;
+                }else{
+                    tablaV[i-1][0]=tablaV[i-1][0]+tablaV[i-1][1].substring(0, 1);
+                        
+                    
+                }
+            }
+        }*/
+         
     }
     
     //Gramatica de prueba
     public void gramaticaSample(){
-        producciones=new ArrayList<>();
+        /*producciones=new ArrayList<>();
         producciones.add(new Produccion("E"));
         producciones.get(0).setProduccion("E+T");
         producciones.get(0).setProduccion("E-T");
@@ -421,7 +444,7 @@ public class Analisis {
         //producciones.get(1).setProduccion("&");
         producciones.add(new Produccion("F"));
         producciones.get(2).setProduccion("i");
-        producciones.get(2).setProduccion("(E)");
+        producciones.get(2).setProduccion("(E)");*/
         
        /* producciones.add(new Produccion("E"));
         producciones.get(0).setProduccion("E+T");
@@ -457,5 +480,9 @@ public class Analisis {
     
     public String[][] getTablaM() {
         return tablaM;
+    }
+    
+    public ArrayList<String> getNoTerminales() {
+        return noTerminales;
     }
 }

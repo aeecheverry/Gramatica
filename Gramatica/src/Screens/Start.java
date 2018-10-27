@@ -120,6 +120,7 @@ public class Start extends JFrame{
         if(seleccion==JFileChooser.APPROVE_OPTION){
             //Seleccionamos el fichero
             gramaticaCargada=true;
+            gramatica.getProducciones().clear();
             File file=fc.getSelectedFile();
             try(BufferedReader br= new BufferedReader(new FileReader(file))){
                 String st;
