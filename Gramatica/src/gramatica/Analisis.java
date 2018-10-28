@@ -76,10 +76,8 @@ public class Analisis {
     
     //Busca los simbolos que coinsidan de izquierda a derecha y factoriza
     public void setFactorizacion(Produccion produccion,ArrayList<Integer> indices,int minIndex){
-        String newProduccion=produccion.getSymbol()+"'";
-        if (!unusedNoTerminales.contains(newProduccion)) {
-            newProduccion=unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6)));
-        }
+        String newProduccion=produccion.getSymbol();
+        newProduccion=!unusedNoTerminales.contains(newProduccion)? unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-1))): newProduccion;
         int inp=producciones.indexOf(produccion)+1;
         producciones.add(inp, new Produccion(newProduccion));
         unusedNoTerminales.remove(newProduccion);
@@ -106,10 +104,10 @@ public class Analisis {
         for(int pi=0;pi<producciones.size();pi++){
             Produccion produccion=producciones.get(pi);
             boolean recursiva=isRecursiva(produccion);
-            String newProduccion=produccion.getSymbol()+"'";
+            String newProduccion=produccion.getSymbol();
             int ipr=producciones.indexOf(produccion)+1;
             if (recursiva) {
-                newProduccion=!unusedNoTerminales.contains(newProduccion)? unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-6))): newProduccion;
+                newProduccion=!unusedNoTerminales.contains(newProduccion)? unusedNoTerminales.get((int)(Math.random()*(unusedNoTerminales.size()-1))): newProduccion;
                 producciones.add(ipr, new Produccion(newProduccion));   
                 unusedNoTerminales.remove(newProduccion);
                 for(int producei=0;producei<produccion.getProducciones().size();producei++){
@@ -161,7 +159,7 @@ public class Analisis {
     
     //Retorna el valor de alfa_i
     public String getAlfa(String produce, int j){
-        return (j+2<produce.length() && noTerminales.contains(produce.substring(j, j+2))) ? produce.substring(j, j+2) : produce.substring(j,j+1);
+        return produce.substring(j, j+1);
     }
     
     //Subrutina que ahorra código buscando alfa
@@ -212,12 +210,8 @@ public class Analisis {
                             if (Beta.isEmpty()) {
                                 regla3AB(produccionI.getSymbol(),B);
                             }else{
-                                if (Beta.length()>1) {
-                                   Beta=noTerminales.contains(Beta.substring(0, 2)) ? Beta.substring(0, 2) : Beta.substring(0, 1);
-                                }
-                                if (!Beta.equals("'")) {
-                                    regla23ABB(indexSiguiente,produccionI.getSymbol(),B,Beta);
-                                }
+                                Beta=Beta.substring(0, 1);
+                                regla23ABB(indexSiguiente,produccionI.getSymbol(),B,Beta);
                             }
                         }
                     }
@@ -269,7 +263,7 @@ public class Analisis {
         producciones.forEach((Produccion p)->{
             p.getProducciones().forEach((String produce)->{
                 for(int i=0;i<produce.length();i++){
-                    if (isTerminal(produce.substring(i, i+1)) && !produce.substring(i, i+1).equals("'") && !terminales.contains(produce.substring(i, i+1)) ) {
+                    if (isTerminal(produce.substring(i, i+1)) && !terminales.contains(produce.substring(i, i+1)) ) {
                         terminales.add(produce.substring(i, i+1));
                     }
                 }
@@ -317,29 +311,6 @@ public class Analisis {
         unusedNoTerminales.add("U");
         unusedNoTerminales.add("V");
         unusedNoTerminales.add("W");
-        unusedNoTerminales.add("A'");
-        unusedNoTerminales.add("B'");
-        unusedNoTerminales.add("C'");
-        unusedNoTerminales.add("D'");
-        unusedNoTerminales.add("E'");
-        unusedNoTerminales.add("F'");
-        unusedNoTerminales.add("G'");
-        unusedNoTerminales.add("H'");
-        unusedNoTerminales.add("I'");
-        unusedNoTerminales.add("J'");
-        unusedNoTerminales.add("K'");
-        unusedNoTerminales.add("L'");
-        unusedNoTerminales.add("M'");
-        unusedNoTerminales.add("N'");
-        unusedNoTerminales.add("O'");
-        unusedNoTerminales.add("P'");
-        unusedNoTerminales.add("Q'");
-        unusedNoTerminales.add("R'");
-        unusedNoTerminales.add("S'");
-        unusedNoTerminales.add("T'");
-        unusedNoTerminales.add("U'");
-        unusedNoTerminales.add("V'");
-        unusedNoTerminales.add("W'");
     }
     
     
@@ -384,10 +355,10 @@ public class Analisis {
         pila.add(fs+producciones.get(0).getSymbol());
         entrada.add(cadena+fs);
         int i=0;
-        String X=(pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length()).equals("'")) ? pila.get(i).substring(pila.get(i).length()-2, pila.get(i).length()): pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());
+        String X=pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());
         while(!X.equals(fs)){
             String a=entrada.get(i).substring(0, 1);
-            X=(pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length()).equals("'")) ? pila.get(i).substring(pila.get(i).length()-2, pila.get(i).length()): pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());;
+            X=pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());;
             if(isTerminal(X)){
                 if (X.equals(a)) {
                     if (X.equals(fs)&& a.equals(fs)) {
@@ -404,21 +375,15 @@ public class Analisis {
                 }
             }else{
                 if (noTerminales.contains(X) && (a.equals(fs) || terminales.contains(a))) {
-                    int n=X.length();
-                    int f=0;
-                    if (terminales.contains(a)) {
-                        f=terminales.indexOf(a)+1;
-                    }else{
-                        f=tablaM[0].length-1;
-                    }
+                    int f=(terminales.contains(a))? terminales.indexOf(a)+1: tablaM[0].length-1;
                     String produce=tablaM[noTerminales.indexOf(X)+1][f];
                     if (!produce.isEmpty() && produce.matches("^[A-Z]'?->(\\w|\\W)*$")) {
                         X=produce.split("->")[1];
                         String simbol=invertirProduce(X);
                         if (simbol.equals(epsilon)) {
-                            pila.add(pila.get(i).substring(0, pila.get(i).length()-n));
+                            pila.add(pila.get(i).substring(0, pila.get(i).length()-1));
                         }else{
-                            pila.add(pila.get(i).substring(0, pila.get(i).length()-n)+invertirProduce(X));
+                            pila.add(pila.get(i).substring(0, pila.get(i).length()-1)+invertirProduce(X));
                         }
                         entrada.add(entrada.get(i));
                         salida.add("red "+produce);
@@ -443,10 +408,6 @@ public class Analisis {
         String invertida = "";
         for(int i=cadena.length();i>=1;i--){
             String simbolo=cadena.substring(i-1, i);
-            if (simbolo.equals("'")) {
-                simbolo=cadena.substring(i-2, i);
-                i--;
-            }
             invertida = invertida + simbolo;
         }
         return invertida;

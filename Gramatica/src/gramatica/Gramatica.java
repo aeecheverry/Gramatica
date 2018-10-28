@@ -35,18 +35,6 @@ public class Gramatica {
                 getProduccion(produce[0]).setProduccion(produce[1]);
             }
         }
-        /*String[] produce=produccion.split("->");
-        if (produce.length<=2 && produce.length>0) {
-            if (!containProduccion(produce[0].toUpperCase())) {
-                producciones.add(new Produccion(produce[0].toUpperCase()));
-                
-            }
-            if (produce.length==1) {
-                getProduccion(produce[0].toUpperCase()).setProduccion("&");
-            }else{
-                getProduccion(produce[0].toUpperCase()).setProduccion(produce[1]);
-            }
-        }*/
     }
     
     

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author andre
  */
 public class Produccion {
-    private String symbol;
+    private final String symbol;
     private ArrayList<String> producciones;
     
     public Produccion(String symbol){
