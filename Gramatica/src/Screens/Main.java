@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -31,16 +33,9 @@ import javax.swing.JTextField;
 /**
  * @author Andrés Echeverry
  */
-public class Main extends JFrame implements ActionListener {
-
-    private JLabel tituloGO;           
-    private JLabel tituloGE;           
-    private JLabel tituloPrimeros;           
-    private JLabel tituloSiguientes;           
+public class Main extends JFrame implements ActionListener {         
     private JPanel panelOEPS;
-    private JPanel panelVC;
-    private JPanel panelTM;
-    private Gramatica gramatica;
+    private final Gramatica gramatica;
     private Analisis motorDeAnalisis;
 
     public Main(Gramatica gramatica) {
@@ -58,6 +53,7 @@ public class Main extends JFrame implements ActionListener {
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     
@@ -122,15 +118,15 @@ public class Main extends JFrame implements ActionListener {
     }
     
     public String[] getDataGramatica(ArrayList<Produccion> producciones){
-        String gramatica="";
+        String cgramatica="";
         for(int i=0;i<producciones.size();i++){
             Produccion produccion=producciones.get(i);
             for(int j=0;j<produccion.getProducciones().size();j++){
                 String produce=produccion.getProduccion(j);
-                gramatica=gramatica+produccion.getSymbol()+"->"+produce+" ";
+                cgramatica=cgramatica+produccion.getSymbol()+"->"+produce+" ";
             }
         }
-        return gramatica.split(" ");
+        return cgramatica.split(" ");
     }
 
     public String[] getDataConjunto(ArrayList<Conjunto> conjuntos){
@@ -207,10 +203,14 @@ public class Main extends JFrame implements ActionListener {
         menuScrollPane.setMaximumSize(new Dimension((int)(width*0.92),(int)(height*0.7)));
         
         botonValidar.addActionListener((ActionEvent e) -> {
-            Modelo model=new Modelo();
-            model.setData(validarCadena(campoValidacion.getText()));
-            table.setModel(model);
-            table.setDefaultRenderer(Object.class, new Render());
+            if (!campoValidacion.getText().isEmpty()) {
+                Modelo model=new Modelo();
+                model.setData(validarCadena(campoValidacion.getText()));
+                table.setModel(model);
+                table.setDefaultRenderer(Object.class, new Render());
+            }else {
+                JOptionPane.showMessageDialog(null, "Ingresa una cadena","Aviso",JOptionPane.INFORMATION_MESSAGE);
+            }
         });
         
         panel.add(tituloTM);

@@ -23,15 +23,13 @@ public class Render extends DefaultTableCellRenderer{
             if (table.getModel().getValueAt(table.getModel().getRowCount()-1, 2).equals("Aceptar")){
                 this.setOpaque(true);
                 c.setBackground(Color.GREEN);
-                //c.setForeground(Color.WHITE);
             }else{
                 c.setBackground(Color.RED);
-                //c.setForeground(Color.WHITE);
             }
         }else{
             c.setBackground(Color.WHITE);
-            c.setForeground(Color.BLACK);
         }
+        c.setForeground(Color.BLACK);
         if (column==1) {
             setHorizontalAlignment(SwingConstants.RIGHT);
         }else{

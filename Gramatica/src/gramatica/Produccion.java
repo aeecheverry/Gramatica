@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Produccion {
     private final String symbol;
-    private ArrayList<String> producciones;
+    ArrayList<String> producciones;
     
     public Produccion(String symbol){
         this.symbol=symbol;

@@ -8,6 +8,7 @@ package Screens;
 import gramatica.Gramatica;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -34,7 +36,7 @@ public class Start extends JFrame{
     private javax.swing.JButton botonIniciar;
     
     private JFileChooser fc;
-    private Gramatica gramatica;
+    Gramatica gramatica;
     private boolean gramaticaCargada;
     
     public Start(){
@@ -56,6 +58,7 @@ public class Start extends JFrame{
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     private void iniComponents(){
@@ -142,6 +145,8 @@ public class Start extends JFrame{
         if (gramaticaCargada && gramatica!=null) {
             Main main=new Main(gramatica);
             main.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(null, "Para inciar debes carga una gramática primero","Aviso",JOptionPane.INFORMATION_MESSAGE);
         }
     }
     

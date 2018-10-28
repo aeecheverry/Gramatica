@@ -347,6 +347,7 @@ public class Analisis {
     }
     
     
+    @SuppressWarnings("empty-statement")
     public void validarCadena(String cadena){
         pila=new ArrayList();
         entrada=new ArrayList();
