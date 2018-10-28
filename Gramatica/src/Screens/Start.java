@@ -58,7 +58,7 @@ public class Start extends JFrame{
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
+        //this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     private void iniComponents(){

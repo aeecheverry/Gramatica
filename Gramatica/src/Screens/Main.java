@@ -53,7 +53,7 @@ public class Main extends JFrame implements ActionListener {
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
+        //this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     
@@ -178,7 +178,7 @@ public class Main extends JFrame implements ActionListener {
         panel.setBackground(Color.white);
         panel.setBounds(x, y, width, height);
         
-        JLabel tituloTM=new JLabel("Validacion de cadena");
+        JLabel tituloTM=new JLabel("Validación de cadena");
         tituloTM.setFont(new Font("Verdana", Font.BOLD, 16));
         tituloTM.setBounds((int)(width*0.01), 0, width,(int)(height*0.075));
         
@@ -204,8 +204,12 @@ public class Main extends JFrame implements ActionListener {
         
         botonValidar.addActionListener((ActionEvent e) -> {
             if (!campoValidacion.getText().isEmpty()) {
+                String cadena=campoValidacion.getText();
+                if (cadena.substring(cadena.length()-1, cadena.length()).equals("$")) {
+                    cadena=cadena.replace("$", "");
+                }
                 Modelo model=new Modelo();
-                model.setData(validarCadena(campoValidacion.getText()));
+                model.setData(validarCadena(cadena));
                 table.setModel(model);
                 table.setDefaultRenderer(Object.class, new Render());
             }else {
