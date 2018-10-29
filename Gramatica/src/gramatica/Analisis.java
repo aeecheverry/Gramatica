@@ -355,6 +355,7 @@ public class Analisis {
         
         pila.add(fs+producciones.get(0).getSymbol());
         entrada.add(cadena+fs);
+        salida.add(" ");
         int i=0;
         String X=pila.get(i).substring(pila.get(i).length()-1, pila.get(i).length());
         while(!X.equals(fs)){
@@ -367,11 +368,11 @@ public class Analisis {
                     }else{
                         pila.add(pila.get(i).substring(0, pila.get(i).length()-1));
                         entrada.add(entrada.get(i).substring(1, entrada.get(i).length()));
-                        salida.add("desp");
+                        salida.add(" ");
                     }
                     i++;
                 }else{
-                    salida.add("Invalida");
+                    salida.add("Rechazar");
                     break;
                 }
             }else{
@@ -387,21 +388,18 @@ public class Analisis {
                             pila.add(pila.get(i).substring(0, pila.get(i).length()-1)+invertirProduce(X));
                         }
                         entrada.add(entrada.get(i));
-                        salida.add("red "+produce);
+                        salida.add(produce);
                         i++;
                     }else{
-                        salida.add("Invalida");
+                        salida.add("Rechazar");
                         break;
                     }
                 }else{
-                    salida.add("Invalida");
+                    salida.add("Rechazar");
                     break;
                 }
             }
         }
-        /*for(int j=0;j<salida.size();j++){
-            System.out.println(pila.get(j)+" "+entrada.get(j)+" "+salida.get(j));
-        }*/
     }
     
     

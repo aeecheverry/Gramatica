@@ -12,7 +12,7 @@ import javax.swing.table.AbstractTableModel;
  * @author andre
  */
 public class Modelo extends AbstractTableModel{
-    private final String[] columnNames={"Pila","Entrada","Salida"};
+    private final String[] headers={"Pila","Entrada","Salida"};
     String[][] table;
     
     public Modelo(){
@@ -30,7 +30,7 @@ public class Modelo extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return headers.length;
     }
 
     @Override
@@ -38,4 +38,8 @@ public class Modelo extends AbstractTableModel{
         return table[rowIndex][columnIndex];
     }
     
+    @Override
+    public String getColumnName(int col) {
+        return headers[col];
+    }
 }

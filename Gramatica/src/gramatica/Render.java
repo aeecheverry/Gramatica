@@ -10,6 +10,7 @@ import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -20,7 +21,8 @@ public class Render extends DefaultTableCellRenderer{
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
         Component c=super.getTableCellRendererComponent (table, value, isSelected, hasFocus, row, column);
         if (row==table.getModel().getRowCount()-1) {
-            if (table.getModel().getValueAt(table.getModel().getRowCount()-1, 2).equals("Aceptar")){
+            TableModel tb=table.getModel();
+            if (tb.getValueAt(tb.getRowCount()-1, 2).equals("Aceptar")){
                 this.setOpaque(true);
                 c.setBackground(Color.GREEN);
             }else{

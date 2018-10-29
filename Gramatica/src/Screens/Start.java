@@ -8,7 +8,6 @@ package Screens;
 import gramatica.Gramatica;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -58,7 +57,6 @@ public class Start extends JFrame{
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     private void iniComponents(){

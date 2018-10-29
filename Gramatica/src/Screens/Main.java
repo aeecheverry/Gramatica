@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ public class Main extends JFrame implements ActionListener {
         this.setLayout(null);                                   
         this.setResizable(false);                               
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("./iconp.png")));
     }
 
     
@@ -130,12 +128,12 @@ public class Main extends JFrame implements ActionListener {
     }
 
     public String[] getDataConjunto(ArrayList<Conjunto> conjuntos){
-        String gramaticas="";
+        String[] gramaticas=new String[conjuntos.size()];
         for(int i=0;i<conjuntos.size();i++){
             Conjunto conjunto=conjuntos.get(i);
-            gramaticas=gramaticas+conjunto.getSimboloProduccion()+"="+conjunto.getSimbolos().toString()+"¡";
+            gramaticas[i]=conjunto.getSimboloProduccion()+"="+conjunto.getSimbolos().toString();
         }
-        return gramaticas.split("¡");
+        return gramaticas;
     }
     
     public JPanel getPanelTablaM(int x,int y,int width, int height){
@@ -228,12 +226,13 @@ public class Main extends JFrame implements ActionListener {
     public String[][] validarCadena(String cadena){
         motorDeAnalisis.validarCadena(cadena);
         int n=motorDeAnalisis.getPila().size();
-        String[][] data = new String[n][3];
+        String[][] data = new String[n+1][3];
         for (int i = 0; i < n; i++) {
             data[i][0] = motorDeAnalisis.getPila().get(i);
             data[i][1] = motorDeAnalisis.getEntrada().get(i);
             data[i][2] = motorDeAnalisis.getSalida().get(i);
         }
+        data[n][2]=motorDeAnalisis.getSalida().get(n);
         return data;
     }
     
